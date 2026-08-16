@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Platform {
+  WEB
+  MOBILE
+}
+
+model Category {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  icon       String
+  references Reference[]
+  createdAt  DateTime    @default(now())
+}
+
+model Reference {
+  id          String       @id @default(cuid())
+  name        String
+  slug        String       @unique
+  logoPath    String
+  hasWeb      Boolean      @default(false)
+  hasMobile   Boolean      @default(false)
+  categoryId  String
+  category    Category     @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  screenshots Screenshot[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Screenshot {
+  id          String    @id @default(cuid())
+  referenceId String
+  reference   Reference @relation(fields: [referenceId], references: [id], onDelete: Cascade)
+  platform    Platform
+  path        String
+  filename    String
+  mimeType    String
+  sizeBytes   Int
+  position    Int
+  createdAt   DateTime  @default(now())
+
+  @@unique([referenceId, platform, position])
+  @@index([referenceId, platform])
+}
