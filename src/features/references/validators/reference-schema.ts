@@ -13,3 +13,10 @@ export const referenceInputSchema = z
   });
 
 export type ReferenceInput = z.infer<typeof referenceInputSchema>;
+
+export const referenceUpdateInputSchema = referenceInputSchema.extend({
+  referenceId: z.string().min(1),
+  deletedScreenshotIds: z.array(z.string().min(1)).max(10_000),
+});
+
+export type ReferenceUpdateInput = z.infer<typeof referenceUpdateInputSchema>;
