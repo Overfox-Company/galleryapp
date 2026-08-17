@@ -15,6 +15,7 @@ export async function createCategoryAction(formData: FormData): Promise<ActionRe
   try {
     await db.category.create({ data: parsed.data });
     revalidatePath("/settings");
+    revalidatePath("/references/new");
     revalidatePath("/");
     return { ok: true, data: undefined };
   } catch {
